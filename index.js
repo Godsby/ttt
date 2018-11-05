@@ -7,7 +7,9 @@ const rl = readline.createInterface({
 let init = function () {
   let game = new Game();
   rl.on('line', line => {
-    if (game.isReady()) {
+    if (game.isOver()) {
+      game.restart();
+    } else if (game.isReady()) {
       let players = +line.trim();
       if (players >= 0 && players <= 2) {
         game.start(players);

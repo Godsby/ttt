@@ -1,16 +1,17 @@
+const State = require('./state.js');
 const Board = require('./board.js');
 const Msg = require('./msg.js');
 const Player = require('./player.js');
 const Ai = require('./ai.js');
 class Game {
   constructor() {
-    this.restart();
+    this.setup();
   }
 
   play(move) {
     this.msg.clear();
     if (move === 99) {
-      this.restart();
+      this.setup();
     }
 
     this.isTileNumber(move) ? this.validate(move) : this.promptNumber();
@@ -43,21 +44,22 @@ class Game {
     let winner = this['p' + this.pNow].marker;
     this.msg.note += `${winner} wins!
 `;
-    this.over = true;
+    this.state.over = true;
     this.update();
   }
 
   tie() {
     this.msg.note += `It's a tie!
 `;
-    this.over = true;
+    this.state.over = true;
     this.update();
   }
 
   start(players) {
-    this.active = true;
-    this.ready = false;
-    this.over = false;
+    // this.active = true;
+    // this.ready = false;
+    // this.over = false;
+    this.state.start();
     players ? this.init(players) : this.spawn(2);
   }
 
@@ -88,15 +90,16 @@ class Game {
     }
   }
 
-  restart() {
-    this.active = false;
+  setup() {
+    // this.active = false;
+    this.state = new State();
     this.players = 0;
     this.board = new Board();
     this.msg = new Msg();
-    this.ready = true;
-    this.over = false;
+    // this.ready = true;
+    // this.over = false;
     this.pNow = 1;
-    this.msg.restart();
+    console.log(this);
   }
 
   switchPlayers() {
@@ -104,8 +107,20 @@ class Game {
     this.update();
   }
 
+  isTurn() {
+    return this.state.isActive() && this.isHumanTurn();
+  }
+
   isHumanTurn() {
     return this['p' + this.pNow].human;
+  }
+
+  setPlayers(players) {
+    if (players >= 0 && players <= 2) {
+      this.start(players);
+    } else {
+      this.promptPlayers();
+    }
   }
 
   promptNumber() {
@@ -118,18 +133,6 @@ class Game {
 Please select an open tile:
 ${this.board.getOpenTiles()}`;
     this.update();
-  }
-
-  isReady() {
-    return this.ready;
-  }
-
-  isActive() {
-    return this.active;
-  }
-
-  isOver() {
-    return this.over;
   }
 }
 

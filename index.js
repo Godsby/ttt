@@ -7,20 +7,12 @@ const rl = readline.createInterface({
 let init = function () {
   let game = new Game();
   rl.on('line', input => {
-    if (game.isOver()) {
-      game.restart();
-    } else if (game.isReady()) {
-      let players = +input.trim();
-      if (players >= 0 && players <= 2) {
-        game.start(players);
-      } else {
-        game.promptPlayers();
-      }
-    } else {
-      if (game.isActive() && game.isHumanTurn()) {
-        let move = +input.trim();
-        game.play(move);
-      }
+    if (game.state.isOver()) {
+      game.setup();
+    } else if (game.state.isReady()) {
+      game.setPlayers(+input.trim());
+    } else if (game.isTurn()) {
+      game.play(+input.trim());
     }
   });
 };

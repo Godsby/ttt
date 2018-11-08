@@ -1,6 +1,6 @@
 class Msg {
   constructor() {
-    this.clear();
+    this.restart();
   }
 
   clear() {

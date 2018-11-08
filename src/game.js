@@ -1,4 +1,5 @@
 const Board = require('./board.js');
+const Msg = require('./msg.js');
 const Player = require('./player.js');
 const Ai = require('./ai.js');
 class Game {
@@ -7,7 +8,7 @@ class Game {
   }
 
   play(move) {
-    this.clear();
+    this.msg.clear();
     if (move === 99) {
       this.restart();
     }
@@ -15,14 +16,9 @@ class Game {
     this.isTileNumber(move) ? this.validate(move) : this.promptNumber();
   }
 
-  clear() {
-    this.text = '';
-    this.note = '';
-  }
-
   update() {
-    this.text += this.board.display();
-    this.render();
+    this.msg.text += this.board.display();
+    this.msg.render();
   }
 
   isTileNumber(move) {
@@ -36,23 +32,23 @@ class Game {
   move(tile) {
     let player = this['p' + this.pNow].marker;
     this.board.choose(tile, player);
-    this.board.isWin()
-      ? this.win()
-      : this.board.isTie()
-        ? this.tie()
-        : this.switchPlayers();
+    this.board.isWin() ?
+      this.win() :
+      this.board.isTie() ?
+      this.tie() :
+      this.switchPlayers();
   }
 
   win() {
     let winner = this['p' + this.pNow].marker;
-    this.note += `${winner} wins!
+    this.msg.note += `${winner} wins!
 `;
     this.over = true;
     this.update();
   }
 
   tie() {
-    this.note += `It's a tie!
+    this.msg.note += `It's a tie!
 `;
     this.over = true;
     this.update();
@@ -76,7 +72,7 @@ class Game {
       this.spawn(ai);
     }
 
-    this.clear();
+    this.msg.clear();
     this.update();
   }
 
@@ -96,12 +92,11 @@ class Game {
     this.active = false;
     this.players = 0;
     this.board = new Board();
+    this.msg = new Msg();
     this.ready = true;
     this.over = false;
     this.pNow = 1;
-    this.clear();
-    this.choose();
-    this.render();
+    this.msg.restart();
   }
 
   switchPlayers() {
@@ -113,34 +108,13 @@ class Game {
     return this['p' + this.pNow].human;
   }
 
-  render() {
-    console.clear();
-    console.log(`${this.text}
-${this.note}`);
-  }
-
-  choose() {
-    this.note += `Choose the number of players:
- [ 0 ] [ 1 ] [ 2 ]
-`;
-  }
-
-  promptPlayers() {
-    this.clear();
-    this.choose();
-    this.note += `Please select 0 or 1 or 2.
-`;
-    this.render();
-  }
-
   promptNumber() {
-    this.note += `
-Please select a valid number between 1 & 9`;
+    this.msg.promptNumber();
     this.update();
   }
 
   promptTile() {
-    this.note += `
+    this.msg.note += `
 Please select an open tile:
 ${this.board.getOpenTiles()}`;
     this.update();

@@ -1,4 +1,4 @@
-const Game = require('./game.js');
+const Game = require('./src/game.js');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -6,11 +6,11 @@ const rl = readline.createInterface({
 });
 let init = function () {
   let game = new Game();
-  rl.on('line', line => {
+  rl.on('line', input => {
     if (game.isOver()) {
       game.restart();
     } else if (game.isReady()) {
-      let players = +line.trim();
+      let players = +input.trim();
       if (players >= 0 && players <= 2) {
         game.start(players);
       } else {
@@ -18,7 +18,7 @@ let init = function () {
       }
     } else {
       if (game.isActive() && game.isHumanTurn()) {
-        let move = +line.trim();
+        let move = +input.trim();
         game.play(move);
       }
     }

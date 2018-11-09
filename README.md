@@ -2,5 +2,5 @@
 
 _TODO:_
 
-- implement AI
+- fix AI!
 - update README

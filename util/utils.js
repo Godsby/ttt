@@ -26,10 +26,13 @@ const isInteger = function (input) {
 
 const setActiveAgentsAndRender = function (game, agents) {
   game.state.setActive();
-  game.agents.setAgents(agents);
+  game.agents.setAgents(agents, game);
   game.msg.clear();
   let display = game.board.display();
   renderBoardDisplay(game.msg, display);
+  // if (!game.agents.p1.human && !game.agents.p2.human) {
+  //   checkTurn(game);
+  // }
 };
 
 const renderBoardDisplay = function (msg, display) {
@@ -92,6 +95,22 @@ const checkState = function (game) {
 
   let display = game.board.display();
   renderBoardDisplay(game.msg, display);
+  checkTurn(game);
+};
+
+const checkTurn = function (game) {
+  if (!game.agents.isHumanTurn()) {
+    let openTiles = game.board.getOpenTiles();
+    let current = game.agents.current;
+    let ai = game.agents['p' + current];
+    let tile = ai.generateTurn(openTiles);
+
+    // console.log(`${ai.marker}  chose ${move} from ${openTiles}`);
+    setTimeout(() => {
+      // this.play(move);
+      update(game, tile);
+    }, 1200);
+  }
 };
 
 const win = function (game) {
@@ -126,4 +145,4 @@ const requestPlayersAndRender = function (msg) {
   msg.render();
 };
 
-module.exports = { play, requestPlayersAndRender };
+module.exports = { play, requestPlayersAndRender, checkTurn };

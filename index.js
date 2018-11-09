@@ -1,19 +1,16 @@
-const Game = require('./src/game.js');
 const readline = require('readline');
+const Game = require('./app/game.js');
+const util = require('./util/utils.js');
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-let init = function () {
+
+const init = function () {
   let game = new Game();
   rl.on('line', input => {
-    if (game.state.isOver()) {
-      game.setup();
-    } else if (game.state.isReady()) {
-      game.setPlayers(+input.trim());
-    } else if (game.isTurn()) {
-      game.play(+input.trim());
-    }
+    util.play(game, input.trim());
   });
 };
 

@@ -1,6 +1,6 @@
 const play = function (game, input) {
   if (input === 'quit' || game.state.isOver()) {
-    game.boot(); // console.log(game);
+    game.boot();// console.log(game);
   } else if (game.state.isReady()) {
     validateInput(game, +input);
   } else if (isActiveHumanTurn(game)) {
@@ -96,6 +96,7 @@ const checkState = function (game) {
   let display = game.board.display();
   renderBoardDisplay(game.msg, display);
   checkTurn(game);
+  // console.log(game);
 };
 
 const checkTurn = function (game) {
